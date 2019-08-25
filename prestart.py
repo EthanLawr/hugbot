@@ -28,5 +28,5 @@ if __name__ == '__main__':
        sc = create_connection("all.hugs")
        sql_table(sc)
        print("database created")
-    token = raw_input("Bot token: ")
-    os.sys("echo \"token = {}\" >> config.py".format(token))
+    token = input("Bot token: ")
+    os.system("echo token = '{}' >> config.py".format(token))
