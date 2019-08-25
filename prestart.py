@@ -1,6 +1,7 @@
 import sqlite3
 from sqlite3 import Error
 import os
+import os.path
  
 def create_connection(db_file):
     """ create a database connection to a SQLite database """
@@ -22,6 +23,10 @@ def sql_table(con):
 
 
 if __name__ == '__main__':
-    print("No database detected, creating...")
-    sc = create_connection("all.hugs")
-    sql_table(sc)
+    if(os.path.isfile('all.hugs')):
+       print("No database detected, creating...")
+       sc = create_connection("all.hugs")
+       sql_table(sc)
+       print("database created")
+    token = raw_input("Bot token: ")
+    os.sys("echo \"token = {}\" >> config.py".format(token))
