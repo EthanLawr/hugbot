@@ -33,23 +33,23 @@ async def hug(ctx, musr: discord.User=None):
         return user == musr
     try:
         reaction, user = await bot.wait_for('reaction_add', timeout=60.0, check=check)
-    except asyncio.TimeoutError:
+    except asyncio.TimeoutError as e:
         await msg.clear_reactions()
         await msg.delete()
-        records.RecordNRG(ctx.author, musr)
+        records.RecordNRG(ctx.author.id, musr.id)
         await ctx.send('_{} did not react in time_'.format(musr.mention))
     else:
         if(str(reaction.emoji) == "♥"):
             await msg.clear_reactions()
             await msg.delete()
             await ctx.send("_{} accepted virtual hug from {}_".format(musr.mention, ctx.author.mention))
-            records.RecordHug(ctx.author, musr, True)
+            records.RecordHug(ctx.author.id, musr.id, True)
             print('Hug request from {} to {} was accepted.'.format(ctx.author, musr))
         elif(str(reaction.emoji) == "🚫"):
             await msg.clear_reactions()
             await msg.delete()
             await ctx.send("_{} rejected virtual hug from {}_".format(musr.mention, ctx.author.mention))
-            records.RecordHug(ctx.author, musr, False)
+            records.RecordHug(ctx.author.id, musr.id, False)
             print('Hug request from {} to {} was rejected.'.format(ctx.author, musr))
 
 
@@ -57,36 +57,49 @@ async def hug(ctx, musr: discord.User=None):
 async def senthugs(ctx, musr: discord.User=None):
     if(ctx.author == musr):
         return
+    
+    res = records.getinfo(ctx.author.id, musr.id)
 
-    res = records.getinfo(ctx.author, musr)
+    if(len(res) < 1):
+        await ctx.send('{} hasn\'t given any hugs yet from {}'.format(ctx.author, musr))
+        return
     re = res[0]
-    await ctx.send('{} has sended {} hugs to {}. {} were accepted, {} were denied, {} got no reply in time'.format(ctx.author, re[0], musr, re[1], re[2], re[3]))
+    await ctx.send('{0} has given {1} hugs from {2}. {3} were accepted, {4} were denied, {5} got no reply in time. Has also slapped {2} {6} times'.format(ctx.author, re[0], musr, re[1], re[2], re[3], re[4]))
 @bot.command()
 async def recievedhugs(ctx, musr: discord.User=None):
     if(ctx.author == musr):
         return
-
-    res = records.getinfo(musr, ctx.author)
+    res = records.getinfo(musr.id, ctx.author.id)
+    
     if(len(res) < 1):
         await ctx.send('{} hasn\'t recieved any hugs yet from {}'.format(ctx.author, musr))
+        return
+    
     re = res[0]
-    await ctx.send('{} has recieved {} hugs from {}. {} were accepted, {} were denied, {} got no reply in time'.format(ctx.author, re[0], musr, re[1], re[2], re[3]))
+    await ctx.send('{0} has recieved {1} hugs from {2}. {3} were accepted, {4} were denied, {5} got no reply in time. Has also been slapped by {2} {6} times'.format(ctx.author, re[0], musr, re[1], re[2], re[3], re[4]))
 
 
 @bot.command()
 async def block(ctx, musr: discord.User=None):
     if(ctx.author == musr):
         return
-    records.blockUsr(ctx.author, musr)
+    records.blockUsr(ctx.author.id, musr.id)
     print('{} blocked {}.'.format(ctx.author, musr))
 
 @bot.command()
 async def unblock(ctx, musr: discord.User=None):
     if(ctx.author == musr):
         return
-    records.unblockUsr(ctx.author, musr)
+    records.unblockUsr(ctx.author.id, musr.id)
     print('{} unblocked {}.'.format(ctx.author, musr))
 
-
+@bot.command()
+async def slap(ctx, musr: discord.User=None):
+    if(ctx.author == musr):
+        await ctx.send('_{} has slapped themself_'.format(ctx.author.mention))
+        return
+    records.recordslap(ctx.author.id, musr.id)
+    print('{} slapped {}.'.format(ctx.author, musr))
+    await ctx.send('_{} slapped {}_'.format(ctx.author.mention, musr.mention))
 
 bot.run(config.token)

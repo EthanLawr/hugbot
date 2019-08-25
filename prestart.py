@@ -17,16 +17,16 @@ def sql_table(con):
  
     cursorObj = con.cursor()
  
-    cursorObj.execute("CREATE TABLE hugs(id integer PRIMARY KEY, Sender text, Reciever text, NrHugs integer, Accepted integer, Rejected integer, NRG integer, blocked boolean)")
+    cursorObj.execute("CREATE TABLE hugs(id integer PRIMARY KEY, Sender text, Reciever text, NrHugs integer, Accepted integer, Rejected integer, NRG integer, NrSlaps integer, blocked boolean)")
  
     con.commit()
 
 
 if __name__ == '__main__':
-    if(os.path.isfile('all.hugs')):
-       print("No database detected, creating...")
-       sc = create_connection("all.hugs")
-       sql_table(sc)
-       print("database created")
+    print("No database detected, creating...")
+    sc = create_connection("all.hugs")
+    sql_table(sc)
+    print("database created")
     token = input("Bot token: ")
     os.system("echo token = '{}' >> config.py".format(token))
+    os.system("echo version = 0.91 >> config.py".format(token))
