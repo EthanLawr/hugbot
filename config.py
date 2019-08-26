@@ -1,2 +1,0 @@
-token = 'NjE1MTEyNDcwMDMzNTk2NDE2.XWJSeA.wkRAVQ9l8zAufAgB42VTDPev6MY' 
-version = 0.91 

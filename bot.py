@@ -10,10 +10,6 @@ bot = commands.Bot(command_prefix='!')
 def get_name(s):
     return s.encode('ascii', 'namereplace')
 
-@bot.command()
-async def emojiname(ctx, arg):
-    await ctx.send(get_name(arg))
-
 yesnorc = ["♥", "🚫"]
 
 # main command
